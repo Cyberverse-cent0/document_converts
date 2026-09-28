@@ -27,7 +27,15 @@ func IsSupportedMode(mode string) bool {
 		"compress-pdf", "compress_pdf", "compress pdf",
 		"rotate-pdf", "rotate_pdf", "rotate pdf",
 		"add-page-numbers", "add_page_numbers", "add page numbers",
-		"add-watermark", "add_watermark", "add watermark":
+		"add-watermark", "add_watermark", "add watermark",
+		"protect-pdf", "protect_pdf", "protect pdf",
+		"unlock-pdf", "unlock_pdf", "unlock pdf",
+		"excel-to-pdf", "excel_to_pdf", "excel to pdf",
+		"powerpoint-to-pdf", "powerpoint_to_pdf", "powerpoint to pdf",
+		"jpg-to-pdf", "jpg_to_pdf", "jpg to pdf",
+		"pdf-to-excel", "pdf_to_excel", "pdf to excel",
+		"pdf-to-jpg", "pdf_to_jpg", "pdf to jpg",
+		"pdf-to-powerpoint", "pdf_to_powerpoint", "pdf to powerpoint":
 		return true
 	default:
 		return false
@@ -55,6 +63,10 @@ func ConvertDocument(inputPath, outputDir, mode string) (string, error) {
 		return PdfToWord(inputPath, outputDir)
 	case "word-to-pdf", "word_to_pdf", "word to pdf":
 		return WordToPDF(inputPath, outputDir)
+	case "excel-to-pdf", "excel_to_pdf", "excel to pdf":
+		return ExcelToPDF(inputPath, outputDir)
+	case "powerpoint-to-pdf", "powerpoint_to_pdf", "powerpoint to pdf":
+		return PowerPointToPDF(inputPath, outputDir)
 	default:
 		return "", fmt.Errorf("unsupported conversion mode: %s", mode)
 	}
@@ -64,9 +76,12 @@ func ConvertWithLibreOffice(inputPath, outputDir, mode string) (string, error) {
 	// Use LibreOffice for real conversion
 	// This requires LibreOffice to be installed on the system
 	var outputFormat string
-	if mode == "pdf-to-word" {
+	switch mode {
+	case "pdf-to-word", "pdf-to-excel", "pdf-to-powerpoint":
 		outputFormat = "docx"
-	} else {
+	case "excel-to-pdf", "powerpoint-to-pdf", "word-to-pdf":
+		outputFormat = "pdf"
+	default:
 		outputFormat = "pdf"
 	}
 

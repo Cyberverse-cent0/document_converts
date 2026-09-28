@@ -6,9 +6,28 @@ export const TOOL_CATEGORIES = {
   EDIT: 'edit',
   SECURITY: 'security',
   INTELLIGENCE: 'intelligence'
-};
+} as const;
 
-export const TOOLS = [
+export type ToolCategory = typeof TOOL_CATEGORIES[keyof typeof TOOL_CATEGORIES];
+
+export interface Tool {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  category: ToolCategory;
+  route: string;
+  isPremium: boolean;
+  features: string[];
+}
+
+export interface CategoryInfo {
+  name: string;
+  description: string;
+  color: string;
+}
+
+export const TOOLS: Tool[] = [
   // Organize PDF
   {
     id: 'merge-pdf',
@@ -344,7 +363,7 @@ export const TOOLS = [
   }
 ];
 
-export const CATEGORY_INFO = {
+export const CATEGORY_INFO: Record<ToolCategory, CategoryInfo> = {
   [TOOL_CATEGORIES.ORGANIZE]: {
     name: 'Organize PDF',
     description: 'Merge, split, and manage your PDF documents',
@@ -382,9 +401,9 @@ export const CATEGORY_INFO = {
   }
 };
 
-export const getToolById = (id) => TOOLS.find(tool => tool.id === id);
-export const getToolsByCategory = (category) => TOOLS.filter(tool => tool.category === category);
-export const searchTools = (query) => TOOLS.filter(tool => 
+export const getToolById = (id: string): Tool | undefined => TOOLS.find(tool => tool.id === id);
+export const getToolsByCategory = (category: ToolCategory): Tool[] => TOOLS.filter(tool => tool.category === category);
+export const searchTools = (query: string): Tool[] => TOOLS.filter(tool => 
   tool.name.toLowerCase().includes(query.toLowerCase()) ||
   tool.description.toLowerCase().includes(query.toLowerCase())
 );

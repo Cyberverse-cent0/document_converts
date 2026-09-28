@@ -1,7 +1,8 @@
 import api from './api';
+// @ts-ignore
 import appConfig from '../config/appConfig';
 import { errorHandler } from '../utils/errorHandler';
-import { ApiResponse, ConversionOptions, ConversionService } from '../types';
+import { ApiResponse, ConversionOptions, ConversionService, ApiError } from '../types/index';
 
 export const conversionService: ConversionService = {
   // Generic file conversion
@@ -24,13 +25,13 @@ export const conversionService: ConversionService = {
       });
       return response.data;
     } catch (error) {
-      error.userMessage = errorHandler.handleConversionError(error);
+      (error as ApiError).userMessage = errorHandler.handleConversionError(error);
       throw error;
     }
   },
 
   // Merge PDFs
-  mergePDFs: async (files, options = {}) => {
+  mergePDFs: async (files: File[], options: ConversionOptions = {}): Promise<ApiResponse> => {
     try {
       const formData = new FormData();
       files.forEach((file) => {
@@ -49,13 +50,13 @@ export const conversionService: ConversionService = {
       });
       return response.data;
     } catch (error) {
-      error.userMessage = errorHandler.handleConversionError(error);
+      (error as ApiError).userMessage = errorHandler.handleConversionError(error);
       throw error;
     }
   },
 
   // Split PDF
-  splitPDF: async (file, options = {}) => {
+  splitPDF: async (file: File, options: ConversionOptions = {}): Promise<ApiResponse> => {
     try {
       const formData = new FormData();
       formData.append('file', file);
@@ -79,13 +80,13 @@ export const conversionService: ConversionService = {
       });
       return response.data;
     } catch (error) {
-      error.userMessage = errorHandler.handleConversionError(error);
+      (error as ApiError).userMessage = errorHandler.handleConversionError(error);
       throw error;
     }
   },
 
   // Compress PDF
-  compressPDF: async (file, options = {}) => {
+  compressPDF: async (file: File, options: ConversionOptions = {}): Promise<ApiResponse> => {
     try {
       const formData = new FormData();
       formData.append('file', file);
@@ -109,13 +110,13 @@ export const conversionService: ConversionService = {
       });
       return response.data;
     } catch (error) {
-      error.userMessage = errorHandler.handleConversionError(error);
+      (error as ApiError).userMessage = errorHandler.handleConversionError(error);
       throw error;
     }
   },
 
   // PDF to Word
-  pdfToWord: async (file, options = {}) => {
+  pdfToWord: async (file: File, options: ConversionOptions = {}): Promise<ApiResponse> => {
     try {
       const formData = new FormData();
       formData.append('file', file);
@@ -133,13 +134,13 @@ export const conversionService: ConversionService = {
       });
       return response.data;
     } catch (error) {
-      error.userMessage = errorHandler.handleConversionError(error);
+      (error as ApiError).userMessage = errorHandler.handleConversionError(error);
       throw error;
     }
   },
 
   // Word to PDF
-  wordToPDF: async (file, options = {}) => {
+  wordToPDF: async (file: File, options: ConversionOptions = {}): Promise<ApiResponse> => {
     try {
       const formData = new FormData();
       formData.append('file', file);
@@ -157,13 +158,13 @@ export const conversionService: ConversionService = {
       });
       return response.data;
     } catch (error) {
-      error.userMessage = errorHandler.handleConversionError(error);
+      (error as ApiError).userMessage = errorHandler.handleConversionError(error);
       throw error;
     }
   },
 
   // Rotate PDF
-  rotatePDF: async (file, options = {}) => {
+  rotatePDF: async (file: File, options: ConversionOptions = {}): Promise<ApiResponse> => {
     try {
       const formData = new FormData();
       formData.append('file', file);
@@ -187,13 +188,13 @@ export const conversionService: ConversionService = {
       });
       return response.data;
     } catch (error) {
-      error.userMessage = errorHandler.handleConversionError(error);
+      (error as ApiError).userMessage = errorHandler.handleConversionError(error);
       throw error;
     }
   },
 
   // Add Page Numbers - updated to use correct backend endpoint
-  addPageNumbers: async (file, options = {}) => {
+  addPageNumbers: async (file: File, options: ConversionOptions = {}): Promise<ApiResponse> => {
     const formData = new FormData();
     formData.append('file', file);
     
@@ -219,7 +220,7 @@ export const conversionService: ConversionService = {
   },
 
   // Add Watermark - updated to use correct backend endpoint
-  addWatermark: async (file, options = {}) => {
+  addWatermark: async (file: File, options: ConversionOptions = {}): Promise<ApiResponse> => {
     const formData = new FormData();
     formData.append('file', file);
     
@@ -246,17 +247,16 @@ export const conversionService: ConversionService = {
     return response.data;
   },
 
-  // PDF to Excel - placeholder for future implementation
-  pdfToExcel: async (file, options = {}) => {
+  // PDF to Excel
+  pdfToExcel: async (file: File, options: ConversionOptions = {}): Promise<ApiResponse> => {
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('mode', 'pdf-to-excel');
     
     Object.keys(options).forEach(key => {
       formData.append(key, options[key]);
     });
 
-    const response = await api.post(appConfig.api.endpoints.conversion.convert, formData, {
+    const response = await api.post(appConfig.api.endpoints.pdf.toExcel, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -264,17 +264,16 @@ export const conversionService: ConversionService = {
     return response.data;
   },
 
-  // Excel to PDF - placeholder for future implementation
-  excelToPDF: async (file, options = {}) => {
+  // Excel to PDF
+  excelToPDF: async (file: File, options: ConversionOptions = {}): Promise<ApiResponse> => {
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('mode', 'excel-to-pdf');
     
     Object.keys(options).forEach(key => {
       formData.append(key, options[key]);
     });
 
-    const response = await api.post(appConfig.api.endpoints.conversion.convert, formData, {
+    const response = await api.post(appConfig.api.endpoints.excel.toPdf, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -282,17 +281,16 @@ export const conversionService: ConversionService = {
     return response.data;
   },
 
-  // PDF to JPG - placeholder for future implementation
-  pdfToJPG: async (file, options = {}) => {
+  // PDF to JPG
+  pdfToJPG: async (file: File, options: ConversionOptions = {}): Promise<ApiResponse> => {
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('mode', 'pdf-to-jpg');
     
     Object.keys(options).forEach(key => {
       formData.append(key, options[key]);
     });
 
-    const response = await api.post(appConfig.api.endpoints.conversion.convert, formData, {
+    const response = await api.post(appConfig.api.endpoints.pdf.toJpg, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -300,19 +298,18 @@ export const conversionService: ConversionService = {
     return response.data;
   },
 
-  // JPG to PDF - placeholder for future implementation
-  jpgToPDF: async (files, options = {}) => {
+  // JPG to PDF
+  jpgToPDF: async (files: File[], options: ConversionOptions = {}): Promise<ApiResponse> => {
     const formData = new FormData();
     files.forEach((file) => {
       formData.append('files', file);
     });
-    formData.append('mode', 'jpg-to-pdf');
     
     Object.keys(options).forEach(key => {
       formData.append(key, options[key]);
     });
 
-    const response = await api.post(appConfig.api.endpoints.conversion.convert, formData, {
+    const response = await api.post(appConfig.api.endpoints.jpg.toPdf, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -320,17 +317,16 @@ export const conversionService: ConversionService = {
     return response.data;
   },
 
-  // PDF to PowerPoint - placeholder for future implementation
-  pdfToPowerPoint: async (file, options = {}) => {
+  // PDF to PowerPoint
+  pdfToPowerPoint: async (file: File, options: ConversionOptions = {}): Promise<ApiResponse> => {
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('mode', 'pdf-to-powerpoint');
     
     Object.keys(options).forEach(key => {
       formData.append(key, options[key]);
     });
 
-    const response = await api.post(appConfig.api.endpoints.conversion.convert, formData, {
+    const response = await api.post(appConfig.api.endpoints.pdf.toPowerPoint, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -338,17 +334,16 @@ export const conversionService: ConversionService = {
     return response.data;
   },
 
-  // PowerPoint to PDF - placeholder for future implementation
-  powerPointToPDF: async (file, options = {}) => {
+  // PowerPoint to PDF
+  powerPointToPDF: async (file: File, options: ConversionOptions = {}): Promise<ApiResponse> => {
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('mode', 'powerpoint-to-pdf');
     
     Object.keys(options).forEach(key => {
       formData.append(key, options[key]);
     });
 
-    const response = await api.post(appConfig.api.endpoints.conversion.convert, formData, {
+    const response = await api.post(appConfig.api.endpoints.powerpoint.toPdf, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -356,17 +351,16 @@ export const conversionService: ConversionService = {
     return response.data;
   },
 
-  // Protect PDF - placeholder for future implementation
-  protectPDF: async (file, options = {}) => {
+  // Protect PDF
+  protectPDF: async (file: File, options: ConversionOptions = {}): Promise<ApiResponse> => {
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('mode', 'protect-pdf');
     
     Object.keys(options).forEach(key => {
       formData.append(key, options[key]);
     });
 
-    const response = await api.post(appConfig.api.endpoints.conversion.convert, formData, {
+    const response = await api.post(appConfig.api.endpoints.pdf.protect, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -374,17 +368,16 @@ export const conversionService: ConversionService = {
     return response.data;
   },
 
-  // Unlock PDF - placeholder for future implementation
-  unlockPDF: async (file, options = {}) => {
+  // Unlock PDF
+  unlockPDF: async (file: File, options: ConversionOptions = {}): Promise<ApiResponse> => {
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('mode', 'unlock-pdf');
     
     Object.keys(options).forEach(key => {
       formData.append(key, options[key]);
     });
 
-    const response = await api.post(appConfig.api.endpoints.conversion.convert, formData, {
+    const response = await api.post(appConfig.api.endpoints.pdf.unlock, formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
@@ -393,7 +386,7 @@ export const conversionService: ConversionService = {
   },
 
   // Download file
-  downloadFile: async (jobId, filename = `converted_file_${jobId}`) => {
+  downloadFile: async (jobId: string, filename: string = `converted_file_${jobId}`): Promise<void> => {
     const response = await api.get(`${appConfig.api.endpoints.conversion.download}/${jobId}`, {
       responseType: 'blob',
     });
@@ -415,27 +408,27 @@ export const conversionService: ConversionService = {
   },
 
   // Get job status
-  getJobStatus: async (jobId) => {
-    const response = await api.get('/api/jobs');
+  getJobStatus: async (jobId: string) => {
+    const response = await api.get(appConfig.api.endpoints.conversion.jobs);
     const jobs = response.data;
-    return jobs.find(job => job.id === jobId);
+    return jobs.find((job: any) => job.id === jobId);
   },
 
   // Get all jobs
   getJobs: async () => {
-    const response = await api.get('/api/jobs');
+    const response = await api.get(appConfig.api.endpoints.conversion.jobs);
     return response.data;
   },
 
   // Cancel job - placeholder for future implementation
-  cancelJob: async (jobId) => {
+  cancelJob: async (jobId: string): Promise<ApiResponse> => {
     // This endpoint needs to be implemented in the backend
     const response = await api.post(`/api/jobs/${jobId}/cancel`);
     return response.data;
   },
 
   // Delete job - placeholder for future implementation
-  deleteJob: async (jobId) => {
+  deleteJob: async (jobId: string): Promise<ApiResponse> => {
     // This endpoint needs to be implemented in the backend
     const response = await api.delete(`/api/jobs/${jobId}`);
     return response.data;

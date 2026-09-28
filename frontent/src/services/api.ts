@@ -1,4 +1,5 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosInstance, AxiosResponse } from 'axios';
+// @ts-ignore
 import appConfig from '../config/appConfig';
 import { errorHandler } from '../utils/errorHandler';
 import { ApiError } from '../types';
@@ -13,14 +14,14 @@ const api: AxiosInstance = axios.create({
 
 // Request interceptor to add auth token
 api.interceptors.request.use(
-  (config: AxiosRequestConfig) => {
+  (config) => {
     const token = localStorage.getItem('token');
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     
     // Add request timestamp for debugging
-    if (appConfig.debug) {
+    if ((appConfig as any).debug) {
       (config as any).metadata = { startTime: new Date() };
     }
     
@@ -36,8 +37,8 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response: AxiosResponse) => {
     // Log response time in debug mode
-    if (appConfig.debug && (response.config as any).metadata) {
-      const duration = new Date() - (response.config as any).metadata.startTime;
+    if ((appConfig as any).debug && (response.config as any).metadata) {
+      const duration = new Date().getTime() - (response.config as any).metadata.startTime.getTime();
       console.log(`API Request completed in ${duration}ms`, {
         url: response.config.url,
         method: response.config.method,

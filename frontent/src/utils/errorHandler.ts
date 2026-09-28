@@ -1,7 +1,7 @@
 /**
  * Error handling utilities for the application
  */
-import { ApiError, AppError } from '../types';
+import { AppError } from '../types';
 
 export const errorHandler = {
   /**
@@ -118,7 +118,7 @@ export const errorHandler = {
    * Create error object with context
    */
   createError: (message: string, code?: string, details: Record<string, any> = {}): AppError => {
-    const error = new Error(message) as AppError;
+    const error = new Error(message) as unknown as AppError;
     error.code = code;
     error.details = details;
     error.timestamp = new Date().toISOString();

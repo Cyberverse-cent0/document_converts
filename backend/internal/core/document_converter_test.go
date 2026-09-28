@@ -10,8 +10,11 @@ func TestIsSupportedFile(t *testing.T) {
 		"report.pdf":  true,
 		"report.docx": true,
 		"report.doc":  true,
+		"report.xlsx": true,
+		"slides.pptx": true,
+		"image.jpg":   true,
+		"image.png":   true,
 		"report.txt":  false,
-		"report.xlsx": false,
 		"report":      false,
 	}
 

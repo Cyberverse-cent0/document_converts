@@ -36,6 +36,7 @@ func RegisterRoutes(mux *http.ServeMux, jobStore *core.JobStore, authService *au
 	RegisterQuotaRoutes(mux, authService, rateLimiter)
 	RegisterScanRoutes(mux, authService, fileScanner)
 	RegisterPDFRoutes(mux, jobStore, authService, rateLimiter, fileScanner, encryptor)
+	RegisterAdditionalPDFRoutes(mux, jobStore, authService, rateLimiter, fileScanner, encryptor)
 
 	mux.HandleFunc("/health", withCORS(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {
