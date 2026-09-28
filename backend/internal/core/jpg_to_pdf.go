@@ -29,8 +29,6 @@ func JpgToPDF(inputPaths []string, outputDir string) (string, error) {
 }
 
 func jpgToPDFWithPython(inputPaths []string, outputPath string) (string, error) {
-	// Create a comma-separated list of input paths for the script
-	
 	pythonScript := fmt.Sprintf(`
 import sys
 from PIL import Image

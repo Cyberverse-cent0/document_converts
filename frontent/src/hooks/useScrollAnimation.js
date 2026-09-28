@@ -9,6 +9,8 @@ export const useScrollAnimation = (threshold = 0.1) => {
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
+        } else{
+          setIsVisible(false);
         }
       },
       { threshold }
@@ -17,12 +19,15 @@ export const useScrollAnimation = (threshold = 0.1) => {
     const currentElement = elementRef.current;
     if (currentElement) {
       observer.observe(currentElement);
+    }else{
+      observer.disconnect();
     }
 
     return () => {
       if (currentElement) {
         observer.unobserve(currentElement);
       }
+      observer.disconnect();
     };
   }, [threshold]);
 
