@@ -1,6 +1,8 @@
 import React from 'react';
 
 const ActivityTimeline = ({ activities = [] }) => {
+  // Ensure activities is always an array
+  const safeActivities = Array.isArray(activities) ? activities : [];
   const formatDate = (date) => {
     const now = new Date();
     const diff = now - date;
@@ -70,7 +72,7 @@ const ActivityTimeline = ({ activities = [] }) => {
     }
   };
 
-  if (activities.length === 0) {
+  if (safeActivities.length === 0) {
     return (
       <div className="card">
         <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
@@ -91,7 +93,7 @@ const ActivityTimeline = ({ activities = [] }) => {
       </h2>
 
       <div className="space-y-4">
-        {activities.map((activity, index) => (
+        {safeActivities.map((activity, index) => (
           <div key={activity.id} className="flex items-start space-x-3">
             {/* Icon */}
             <div className="flex-shrink-0 w-8 h-8 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center text-lg">

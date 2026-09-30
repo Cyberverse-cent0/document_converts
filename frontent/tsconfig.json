@@ -24,7 +24,10 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+
+    /* Deprecation warnings */
+    "ignoreDeprecations": "5.0"
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]

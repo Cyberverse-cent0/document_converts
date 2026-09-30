@@ -1,6 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
-// @ts-ignore
-import appConfig from '../config/appConfig';
+import appConfig from '../config/appConfig.js';
 import { errorHandler } from '../utils/errorHandler';
 import { ApiError } from '../types';
 

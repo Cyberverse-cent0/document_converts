@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { TOOLS, TOOL_CATEGORIES, getToolsByCategory, searchTools } from '../config/tools';
 import ToolGrid from '../components/Tools/ToolGrid';
 import CategoryFilter from '../components/Tools/CategoryFilter';
@@ -6,6 +7,7 @@ import ToolSearch from '../components/Tools/ToolSearch';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 
 const ToolsDashboard = () => {
+  const location = useLocation();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
@@ -13,6 +15,13 @@ const ToolsDashboard = () => {
   const [heroRef, heroVisible] = useScrollAnimation(0.1);
   const [filterRef, filterVisible] = useScrollAnimation(0.1);
   const [gridRef, gridVisible] = useScrollAnimation(0.1);
+
+  // Handle search query from home page navigation
+  useEffect(() => {
+    if (location.state?.searchQuery) {
+      setSearchQuery(location.state.searchQuery);
+    }
+  }, [location.state]);
 
   const filteredTools = useMemo(() => {
     let result = TOOLS;

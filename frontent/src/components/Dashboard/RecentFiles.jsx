@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const RecentFiles = ({ files = [] }) => {
+  // Ensure files is always an array
+  const safeFiles = Array.isArray(files) ? files : [];
   const formatFileSize = (bytes) => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -36,7 +38,7 @@ const RecentFiles = ({ files = [] }) => {
     return icons[toolId] || '📄';
   };
 
-  if (files.length === 0) {
+  if (safeFiles.length === 0) {
     return (
       <div className="card">
         <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
@@ -65,7 +67,7 @@ const RecentFiles = ({ files = [] }) => {
       </div>
 
       <div className="space-y-3">
-        {files.map((file) => (
+        {safeFiles.map((file) => (
           <div
             key={file.id}
             className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"

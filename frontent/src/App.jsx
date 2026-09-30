@@ -5,11 +5,11 @@ import { ThemeProvider } from './context/ThemeContext';
 import MainLayout from './components/Layout/MainLayout';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 import ParticleBackground from './components/Background/ParticleBackground';
-import Home from './pages/Home';
+import HomeILovePDF from './pages/HomeILovePDF';
 import ToolsDashboard from './pages/ToolsDashboard';
 import Login from './pages/Login';
 import Register from './pages/Register';
-import Profile from './pages/Profile';
+import ProfileNew from './pages/ProfileNew';
 import History from './pages/History';
 import Dashboard from './pages/Dashboard';
 import MergePDF from './pages/tools/MergePDF';
@@ -33,7 +33,7 @@ function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <Router>
+        <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <ParticleBackground />
           <Routes>
             {/* Public routes - with sidebar */}
@@ -54,9 +54,15 @@ function App() {
               }
             />
             
-            {/* Protected routes - with sidebar */}
+            {/* Public routes - without sidebar for new home page */}
             <Route
               path="/"
+              element={<HomeILovePDF />}
+            />
+            
+            {/* Protected routes - with sidebar */}
+            <Route
+              path="/dashboard"
               element={
                 <ProtectedRoute>
                   <MainLayout>
@@ -70,7 +76,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <MainLayout>
-                    <Home />
+                    <HomeILovePDF />
                   </MainLayout>
                 </ProtectedRoute>
               }
@@ -78,11 +84,9 @@ function App() {
             <Route
               path="/tools"
               element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <ToolsDashboard />
-                  </MainLayout>
-                </ProtectedRoute>
+                <MainLayout>
+                  <ToolsDashboard />
+                </MainLayout>
               }
             />
             <Route
@@ -90,7 +94,7 @@ function App() {
               element={
                 <ProtectedRoute>
                   <MainLayout>
-                    <Profile />
+                    <ProfileNew />
                   </MainLayout>
                 </ProtectedRoute>
               }
@@ -106,165 +110,133 @@ function App() {
               }
             />
             
-            {/* Tool routes */}
+            {/* Tool routes - public access */}
             <Route
               path="/tools/merge-pdf"
               element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <MergePDF />
-                  </MainLayout>
-                </ProtectedRoute>
+                <MainLayout>
+                  <MergePDF />
+                </MainLayout>
               }
             />
             <Route
               path="/tools/split-pdf"
               element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <SplitPDF />
-                  </MainLayout>
-                </ProtectedRoute>
+                <MainLayout>
+                  <SplitPDF />
+                </MainLayout>
               }
             />
             <Route
               path="/tools/compress-pdf"
               element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <CompressPDF />
-                  </MainLayout>
-                </ProtectedRoute>
+                <MainLayout>
+                  <CompressPDF />
+                </MainLayout>
               }
             />
             <Route
               path="/tools/pdf-to-word"
               element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <PDFToWord />
-                  </MainLayout>
-                </ProtectedRoute>
+                <MainLayout>
+                  <PDFToWord />
+                </MainLayout>
               }
             />
             <Route
               path="/tools/word-to-pdf"
               element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <WordToPDF />
-                  </MainLayout>
-                </ProtectedRoute>
+                <MainLayout>
+                  <WordToPDF />
+                </MainLayout>
               }
             />
             <Route
               path="/tools/rotate-pdf"
               element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <RotatePDF />
-                  </MainLayout>
-                </ProtectedRoute>
+                <MainLayout>
+                  <RotatePDF />
+                </MainLayout>
               }
             />
             <Route
               path="/tools/add-page-numbers"
               element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <AddPageNumbers />
-                  </MainLayout>
-                </ProtectedRoute>
+                <MainLayout>
+                  <AddPageNumbers />
+                </MainLayout>
               }
             />
             <Route
               path="/tools/add-watermark"
               element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <AddWatermark />
-                  </MainLayout>
-                </ProtectedRoute>
+                <MainLayout>
+                  <AddWatermark />
+                </MainLayout>
               }
             />
             <Route
               path="/tools/jpg-to-pdf"
               element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <JpgToPdf />
-                  </MainLayout>
-                </ProtectedRoute>
+                <MainLayout>
+                  <JpgToPdf />
+                </MainLayout>
               }
             />
             <Route
               path="/tools/excel-to-pdf"
               element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <ExcelToPdf />
-                  </MainLayout>
-                </ProtectedRoute>
+                <MainLayout>
+                  <ExcelToPdf />
+                </MainLayout>
               }
             />
             <Route
               path="/tools/powerpoint-to-pdf"
               element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <PowerPointToPdf />
-                  </MainLayout>
-                </ProtectedRoute>
+                <MainLayout>
+                  <PowerPointToPdf />
+                </MainLayout>
               }
             />
             <Route
               path="/tools/protect-pdf"
               element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <ProtectPdf />
-                  </MainLayout>
-                </ProtectedRoute>
+                <MainLayout>
+                  <ProtectPdf />
+                </MainLayout>
               }
             />
             <Route
               path="/tools/unlock-pdf"
               element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <UnlockPdf />
-                  </MainLayout>
-                </ProtectedRoute>
+                <MainLayout>
+                  <UnlockPdf />
+                </MainLayout>
               }
             />
             <Route
               path="/tools/pdf-to-jpg"
               element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <PdfToJpg />
-                  </MainLayout>
-                </ProtectedRoute>
+                <MainLayout>
+                  <PdfToJpg />
+                </MainLayout>
               }
             />
             <Route
               path="/tools/pdf-to-excel"
               element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <PdfToExcel />
-                  </MainLayout>
-                </ProtectedRoute>
+                <MainLayout>
+                  <PdfToExcel />
+                </MainLayout>
               }
             />
             <Route
               path="/tools/pdf-to-powerpoint"
               element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <PdfToPowerPoint />
-                  </MainLayout>
-                </ProtectedRoute>
+                <MainLayout>
+                  <PdfToPowerPoint />
+                </MainLayout>
               }
             />
             

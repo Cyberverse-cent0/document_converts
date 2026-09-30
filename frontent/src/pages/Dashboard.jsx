@@ -17,7 +17,6 @@ const Dashboard = () => {
   const [recentFiles, setRecentFiles] = useState([]);
   const [activities, setActivities] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   const [headerRef, headerVisible] = useScrollAnimation(0.1);
   const [statsRef, statsVisible] = useScrollAnimation(0.1);
@@ -30,22 +29,42 @@ const Dashboard = () => {
   const loadDashboardData = async () => {
     try {
       setLoading(true);
-      setError(null);
 
-      // Fetch data from API
-      const [userStats, recentFilesData, activityData] = await Promise.all([
-        dashboardService.getUserStats(),
-        dashboardService.getRecentFiles(10),
-        dashboardService.getActivityTimeline(20)
-      ]);
+      // Set default data first
+      const defaultStats = {
+        totalConversions: 0,
+        totalFilesProcessed: 0,
+        storageUsed: 0,
+        storageLimit: 100 * 1024 * 1024,
+        favoriteTools: []
+      };
 
-      setStats(userStats);
-      setRecentFiles(recentFilesData);
-      setActivities(activityData);
+      // Try to fetch data from API, but use defaults if endpoints don't exist
+      try {
+        const userStats = await dashboardService.getUserStats();
+        setStats(typeof userStats === 'object' && userStats !== null ? userStats : defaultStats);
+      } catch (statsErr) {
+        console.log('Stats endpoint not available, using defaults');
+        setStats(defaultStats);
+      }
+
+      try {
+        const recentFilesData = await dashboardService.getRecentFiles(10);
+        setRecentFiles(Array.isArray(recentFilesData) ? recentFilesData : []);
+      } catch (filesErr) {
+        console.log('Recent files endpoint not available, using defaults');
+        setRecentFiles([]);
+      }
+
+      try {
+        const activityData = await dashboardService.getActivityTimeline(20);
+        setActivities(Array.isArray(activityData) ? activityData : []);
+      } catch (activityErr) {
+        console.log('Activity endpoint not available, using defaults');
+        setActivities([]);
+      }
     } catch (err) {
       console.error('Failed to load dashboard data:', err);
-      setError('Failed to load dashboard data. Please try again.');
-      
       // Set default data on error
       setStats({
         totalConversions: 0,
@@ -69,7 +88,7 @@ const Dashboard = () => {
     return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
   };
 
-  const storagePercentage = (stats.storageUsed / stats.storageLimit) * 100;
+  const storagePercentage = stats.storageLimit > 0 ? (stats.storageUsed / stats.storageLimit) * 100 : 0;
 
   if (loading) {
     return (
@@ -81,22 +100,6 @@ const Dashboard = () => {
             </svg>
             <p className="mt-4 text-gray-600 dark:text-gray-400">Loading dashboard...</p>
           </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="max-w-7xl mx-auto">
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-          {error}
-          <button
-            onClick={loadDashboardData}
-            className="ml-4 text-red-700 underline hover:text-red-800"
-          >
-            Retry
-          </button>
         </div>
       </div>
     );
@@ -167,7 +170,7 @@ const Dashboard = () => {
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-1">Favorite Tools</p>
               <p className="text-3xl font-bold text-orange-600 dark:text-orange-400">
-                {stats.favoriteTools.length}
+                {stats.favoriteTools?.length || 0}
               </p>
             </div>
             <div className="text-4xl">⭐</div>
